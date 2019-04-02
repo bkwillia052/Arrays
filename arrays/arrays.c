@@ -26,7 +26,7 @@ Array *create_array (int capacity) {
   array->capacity = capacity;
   array->count = 0;
   // Allocate memory for elements
-  char **elements = malloc(capacity * sizeof(char));
+  char **elements = malloc(capacity * sizeof(char *));
   array->elements = elements;
 
   return array;
@@ -54,7 +54,7 @@ void destroy_array(Array *arr) {
 void resize_array(Array *arr) {
 
   // Create a new element storage with double capacity
-  char **new_elements = malloc(sizeof(char **) * arr->capacity * 2);
+  char **new_elements = malloc(sizeof(char *) * ( arr->capacity * 2));
   // Copy elements into the new storage
   for (int i = 0; i < arr->count; i++)
   {
@@ -83,8 +83,14 @@ void resize_array(Array *arr) {
 char *arr_read(Array *arr, int index) {
 
   // Throw an error if the index is greater or equal to than the current count
+  if (index >= (*arr).count){
+    perror("Index Not Found.");
+    return NULL;
+  }
+  
 
   // Otherwise, return the element at the given index
+  return arr->elements[index];
 }
 
 
@@ -94,14 +100,27 @@ char *arr_read(Array *arr, int index) {
 void arr_insert(Array *arr, char *element, int index) {
 
   // Throw an error if the index is greater than the current count
-
+  if (index >= (*arr).count){
+    perror("Index Not Found.");
+    
+  }
   // Resize the array if the number of elements is over capacity
-
+  if (arr->count > arr->capacity)
+  {
+    resize_array(arr);
+  }
+  
   // Move every element after the insert index to the right one position
-
+  int prev_count = arr->count;
+  for (int i = prev_count; i > index; i--)
+  {
+    arr->elements[i] = arr->elements[i - 1];
+  }
   // Copy the element and add it to the array
+  arr->elements[index] = strdup(element);
 
   // Increment count by 1
+  arr->count++;
 
 }
 
@@ -112,10 +131,17 @@ void arr_append(Array *arr, char *element) {
 
   // Resize the array if the number of elements is over capacity
   // or throw an error if resize isn't implemented yet.
-
+  if (arr->count == arr->capacity)
+  {
+    resize_array(arr);
+  }
   // Copy the element and add it to the end of the array
+  arr->elements[arr->count] = strdup(element);
 
   // Increment count by 1
+  arr->count++;
+
+
 
 }
 
