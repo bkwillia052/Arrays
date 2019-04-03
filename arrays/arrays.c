@@ -163,6 +163,7 @@ void arr_remove(Array *arr, char *element) {
     if (string_match == 0)
     {
       found = i;
+      free(arr->elements[i]);
       break;
     }
   }
